@@ -1,11 +1,3 @@
-# Common Ambient Variables:
-#   VCPKG_ROOT_DIR = <C:\path\to\current\vcpkg>
-#   TARGET_TRIPLET is the current triplet (x86-windows, etc)
-#   PORT is the current port name (zlib, etc)
-#   CURRENT_BUILDTREES_DIR = ${VCPKG_ROOT_DIR}\buildtrees\${PORT}
-#   CURRENT_PACKAGES_DIR  = ${VCPKG_ROOT_DIR}\packages\${PORT}_${TARGET_TRIPLET}
-#
-
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
     message("Building DLLs not supported. Building static instead.")
     set(VCPKG_LIBRARY_LINKAGE static)
@@ -15,10 +7,14 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO google/flatbuffers
-    REF v1.7.1
-    SHA512 57732fc352c216c4be6d3237f93b872abf9dd2b62361d7d2856f99804a178760e4665ead2e33d5acdd00984ad03a746f581c9784ece583e1b2df1a10776f967a
+    REF v1.9.0
+    SHA512 0ba07dbe5b2fde1d0a6e14ee26ee2816062541d934eda204b846a30c019362f2626761b628c900293928b9b546dba8ca477c13182e022c3e0e0a142fd67f0696
     HEAD_REF master
 )
+
+if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    list(APPEND OPTIONS -DFLATBUFFERS_BUILD_FLATC=OFF -DFLATBUFFERS_BUILD_FLATHASH=OFF)
+endif()
 
 set(OPTIONS)
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
@@ -37,13 +33,14 @@ vcpkg_configure_cmake(
 )
 
 vcpkg_install_cmake()
+vcpkg_fixup_cmake_targets(CONFIG_PATH "lib/cmake/flatbuffers")
 
 if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/bin)
     file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/bin)
 endif()
 if(EXISTS ${CURRENT_PACKAGES_DIR}/bin/flatc.exe)
-    make_directory(${CURRENT_PACKAGES_DIR}/tools)
-    file(RENAME ${CURRENT_PACKAGES_DIR}/bin/flatc.exe ${CURRENT_PACKAGES_DIR}/tools/flatc.exe)
+    make_directory(${CURRENT_PACKAGES_DIR}/tools/flatbuffers)
+    file(RENAME ${CURRENT_PACKAGES_DIR}/bin/flatc.exe ${CURRENT_PACKAGES_DIR}/tools/flatbuffers/flatc.exe)
     file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin)
 endif()
 if(EXISTS ${CURRENT_PACKAGES_DIR}/lib/flatbuffers.dll)

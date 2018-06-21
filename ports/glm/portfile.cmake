@@ -3,9 +3,14 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO g-truc/glm
-    REF 0.9.8.4 
-    SHA512 ff0e0651a695caebe9235882d14e09546d52b3cdf66cca8e2078f15b02a3fca4e47bd97d2807aa329f76aa633af3b4999501bd4d0b22ad44b00558d4917f39ed
+    REF 0.9.9.0
+    SHA512 b7a6996cb98bc334130c33a339275b50ea28d8dfce300f3d14ac52edf0b5c38bf216d318f411e898edef428876c0b2d1f6a6e951f160f31425fe0852ad150421
     HEAD_REF master
+)
+
+vcpkg_apply_patches(
+    SOURCE_PATH ${SOURCE_PATH}
+    PATCHES "${CMAKE_CURRENT_LIST_DIR}/ignore-warning-C4201.patch"
 )
 
 vcpkg_configure_cmake(
@@ -22,5 +27,5 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
 # Put the license file where vcpkg expects it
-file(COPY ${SOURCE_PATH}/copying.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/glm/)
-file(RENAME ${CURRENT_PACKAGES_DIR}/share/glm/copying.txt ${CURRENT_PACKAGES_DIR}/share/glm/copyright)
+file(COPY ${SOURCE_PATH}/manual.md DESTINATION ${CURRENT_PACKAGES_DIR}/share/glm/)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/glm/manual.md ${CURRENT_PACKAGES_DIR}/share/glm/copyright)

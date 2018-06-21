@@ -6,18 +6,30 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO kcat/openal-soft
-    REF openal-soft-1.18.1
-    SHA512 6e9d65dafbd77ca5d7badb1999b08a104e9c7e6c6637fb9ccca946de5bdfc6266de9d316ce06a979c94309ac9e0e5c1fac27b2673297f9062ef67f0e8a54e39c
+    REF openal-soft-1.18.2
+    SHA512 85c62d3d16d2a371c1930310eed7219031203824289d9a30d60000f8e124ffa67e1bbfb15f1ba6841ef7346e88c000b9cca51c79d32c02e5dc9870392c536723
     HEAD_REF master
 )
 
-vcpkg_apply_patches(SOURCE_PATH ${SOURCE_PATH}
-    PATCHES ${CMAKE_CURRENT_LIST_DIR}/dont-export-symbols-in-static-build.patch)
+vcpkg_apply_patches(
+    SOURCE_PATH ${SOURCE_PATH}
+    PATCHES
+        ${CMAKE_CURRENT_LIST_DIR}/dont-export-symbols-in-static-build.patch
+        ${CMAKE_CURRENT_LIST_DIR}/cmake-3-11.patch
+)
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
     set(OPENAL_LIBTYPE "SHARED")
 else()
     set(OPENAL_LIBTYPE "STATIC")
+endif()
+
+if(VCPKG_CMAKE_SYSTEM_NAME)
+    set(ALSOFT_REQUIRE_WINDOWS OFF)
+    set(ALSOFT_REQUIRE_LINUX ON)
+else()
+    set(ALSOFT_REQUIRE_WINDOWS ON)
+    set(ALSOFT_REQUIRE_LINUX OFF)
 endif()
 
 vcpkg_configure_cmake(
@@ -32,7 +44,7 @@ vcpkg_configure_cmake(
         -DALSOFT_CONFIG=OFF
         -DALSOFT_HRTF_DEFS=OFF
         -DALSOFT_AMBDEC_PRESETS=OFF
-        -DALSOFT_BACKEND_ALSA=OFF
+        -DALSOFT_BACKEND_ALSA=${ALSOFT_REQUIRE_LINUX}
         -DALSOFT_BACKEND_OSS=OFF
         -DALSOFT_BACKEND_SOLARIS=OFF
         -DALSOFT_BACKEND_SNDIO=OFF
@@ -43,9 +55,9 @@ vcpkg_configure_cmake(
         -DALSOFT_BACKEND_JACK=OFF
         -DALSOFT_BACKEND_OPENSL=OFF
         -DALSOFT_BACKEND_WAVE=ON
-        -DALSOFT_REQUIRE_WINMM=ON
-        -DALSOFT_REQUIRE_DSOUND=ON
-        -DALSOFT_REQUIRE_MMDEVAPI=ON
+        -DALSOFT_REQUIRE_WINMM=${ALSOFT_REQUIRE_WINDOWS}
+        -DALSOFT_REQUIRE_DSOUND=${ALSOFT_REQUIRE_WINDOWS}
+        -DALSOFT_REQUIRE_MMDEVAPI=${ALSOFT_REQUIRE_WINDOWS}
 )
 
 vcpkg_install_cmake()

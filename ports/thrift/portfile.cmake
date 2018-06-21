@@ -15,16 +15,18 @@ vcpkg_find_acquire_program(BISON)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO apache/thrift
-    REF 72ca60debae1d9fb35d9f0085118873669006d7f
-    SHA512 6050c66b176ad596d9632b224b8fb49aa3b823c977dacad729dbcdefb0da60eb983d3a32d9326b4317bae6755fb1fc4cee2cc6c282b3e1636a4528844c0f5915
+    REF b5471f63cb4bb8e3b00835a9ca9e48ff76a3bb51
+    SHA512 66034b35301a404aa20c8ddd84e7ed58c94cc0e68c3f393efa1d6ca855e785fa20c450ad06ae96949dafcbf23a69601c0d391d5bfb9ff9dcefbbef10405504cc
     HEAD_REF master
 )
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DWITH_SHARED_LIB=OFF
         -DWITH_STATIC_LIB=ON
+        -DWITH_STDTHREADS=ON
         -DBUILD_TESTING=off
         -DBUILD_JAVA=off
         -DBUILD_C_GLIB=off

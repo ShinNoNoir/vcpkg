@@ -19,6 +19,11 @@
 ## ```
 ##
 ## ## Parameters
+## ### USE_VCPKG_INTEGRATION
+## Apply the normal `integrate install` integration for building the project.
+##
+## By default, projects built with this command will not automatically link libraries or have header paths set.
+##
 ## ### PROJECT_PATH
 ## The path to the solution (`.sln`) or project (`.vcxproj`) file.
 ##
@@ -52,11 +57,17 @@
 ##
 ## ## Examples
 ##
-## * [libuv](https://github.com/Microsoft/vcpkg/blob/master/ports/libuv/portfile.cmake)
-## * [zeromq](https://github.com/Microsoft/vcpkg/blob/master/ports/zeromq/portfile.cmake)
+## * [chakracore](https://github.com/Microsoft/vcpkg/blob/master/ports/chakracore/portfile.cmake)
+## * [cppunit](https://github.com/Microsoft/vcpkg/blob/master/ports/cppunit/portfile.cmake)
 
 function(vcpkg_build_msbuild)
-    cmake_parse_arguments(_csc "" "PROJECT_PATH;RELEASE_CONFIGURATION;DEBUG_CONFIGURATION;PLATFORM;PLATFORM_TOOLSET;TARGET_PLATFORM_VERSION;TARGET" "OPTIONS;OPTIONS_RELEASE;OPTIONS_DEBUG" ${ARGN})
+    cmake_parse_arguments(
+        _csc
+        "USE_VCPKG_INTEGRATION"
+        "PROJECT_PATH;RELEASE_CONFIGURATION;DEBUG_CONFIGURATION;PLATFORM;PLATFORM_TOOLSET;TARGET_PLATFORM_VERSION;TARGET"
+        "OPTIONS;OPTIONS_RELEASE;OPTIONS_DEBUG"
+        ${ARGN}
+    )
 
     if(NOT DEFINED _csc_RELEASE_CONFIGURATION)
         set(_csc_RELEASE_CONFIGURATION Release)
@@ -87,25 +98,39 @@ function(vcpkg_build_msbuild)
         /m
     )
 
-    message(STATUS "Building ${_csc_PROJECT_PATH} for Release")
-    file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel)
-    vcpkg_execute_required_process(
-        COMMAND msbuild ${_csc_PROJECT_PATH}
-            /p:Configuration=${_csc_RELEASE_CONFIGURATION}
-            ${_csc_OPTIONS}
-            ${_csc_OPTIONS_RELEASE}
-        WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel
-        LOGNAME build-${TARGET_TRIPLET}-rel
-    )
+    if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+        # Disable LTCG for static libraries because this setting introduces ABI incompatibility between minor compiler versions
+        # TODO: Add a way for the user to override this if they want to opt-in to incompatibility
+        list(APPEND _csc_OPTIONS /p:WholeProgramOptimization=false)
+    endif()
 
-    message(STATUS "Building ${_csc_PROJECT_PATH} for Debug")
-    file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg)
-    vcpkg_execute_required_process(
-        COMMAND msbuild ${_csc_PROJECT_PATH}
-            /p:Configuration=${_csc_DEBUG_CONFIGURATION}
-            ${_csc_OPTIONS}
-            ${_csc_OPTIONS_DEBUG}
-        WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
-        LOGNAME build-${TARGET_TRIPLET}-dbg
-    )
+    if(_csc_USE_VCPKG_INTEGRATION)
+        list(APPEND _csc_OPTIONS /p:ForceImportBeforeCppTargets=${VCPKG_ROOT_DIR}/scripts/buildsystems/msbuild/vcpkg.targets)
+    endif()
+
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
+        message(STATUS "Building ${_csc_PROJECT_PATH} for Release")
+        file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel)
+        vcpkg_execute_required_process(
+            COMMAND msbuild ${_csc_PROJECT_PATH}
+                /p:Configuration=${_csc_RELEASE_CONFIGURATION}
+                ${_csc_OPTIONS}
+                ${_csc_OPTIONS_RELEASE}
+            WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel
+            LOGNAME build-${TARGET_TRIPLET}-rel
+        )
+    endif()
+
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
+        message(STATUS "Building ${_csc_PROJECT_PATH} for Debug")
+        file(MAKE_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg)
+        vcpkg_execute_required_process(
+            COMMAND msbuild ${_csc_PROJECT_PATH}
+                /p:Configuration=${_csc_DEBUG_CONFIGURATION}
+                ${_csc_OPTIONS}
+                ${_csc_OPTIONS_DEBUG}
+            WORKING_DIRECTORY ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg
+            LOGNAME build-${TARGET_TRIPLET}-dbg
+        )
+    endif()
 endfunction()

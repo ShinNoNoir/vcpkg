@@ -1,12 +1,12 @@
-#header-only library
 include(vcpkg_common_functions)
-set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/eigen-eigen-5a0156e40feb)
-vcpkg_download_distfile(ARCHIVE
-    URLS "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
-    FILENAME "eigen-3.3.4.tar.bz2"
-    SHA512 d67a3fd8f7ce811af65fc1d43ec347dadf9c643a49135f7e455fc303773bad09e80a125282c7dfca7a1993b79e1f66576ac92418119fbb0fa50c1a581b957c0d
+
+vcpkg_from_github(
+    OUT_SOURCE_PATH SOURCE_PATH
+    REPO eigenteam/eigen-git-mirror
+    REF 3.3.4
+    SHA512 da3f96ef65c64031bed5311d4ad95cd668f2facb3439bb1f4ecea10ce7cf881daf9d053567fe4ebb50626ab4dbb975d1f74bd632626c688898a97064f99a8f59
+    HEAD_REF master
 )
-vcpkg_extract_source_archive(${ARCHIVE})
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}

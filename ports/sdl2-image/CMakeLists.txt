@@ -5,7 +5,7 @@ project(SDL2_image C)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 # enable all file formats which are supported natively
-set(SUPPORTED_FORMATS BMP GIF LBM PCX PNM TGA XPM XCF XV)
+set(SUPPORTED_FORMATS BMP GIF LBM PCX PNM TGA XPM XCF XV SVG)
 
 # enable all file formats which are supported through external dependencies
 # first try to load them statically (lib file in vcpkg installation)
@@ -34,6 +34,7 @@ add_library(SDL2_image
     IMG_pcx.c
     IMG_png.c
     IMG_pnm.c
+    IMG_svg.c
     IMG_tga.c
     IMG_tif.c
     IMG_webp.c
@@ -41,6 +42,7 @@ add_library(SDL2_image
     IMG_xpm.c
     IMG_xv.c
     IMG_xxx.c
+    version.rc
     )
 
 set_target_properties(SDL2_image PROPERTIES DEFINE_SYMBOL SDL2_EXPORTS)
@@ -51,7 +53,7 @@ endforeach(FORMAT)
 
 # SDL
 find_path(SDL_INCLUDE_DIR SDL2/SDL.h)
-find_library(SDL_LIBRARY SDL2)
+find_library(SDL_LIBRARY NAMES SDL2d SDL2)
 
 include_directories(${SDL_INCLUDE_DIR})
 include_directories(${SDL_INCLUDE_DIR}/SDL2)

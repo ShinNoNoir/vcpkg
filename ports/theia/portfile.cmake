@@ -3,13 +3,17 @@ if (VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     set(VCPKG_LIBRARY_LINKAGE static)
 endif()
 
+if(VCPKG_TARGET_ARCHIECTURE STREQUAL "x86")
+    message(FATAL_ERROR "theia requires ceres[suitesparse] which depends on suitesparse which depends on openblas which is unavailable on x86.")
+endif()
+
 include(vcpkg_common_functions)
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO sweeneychris/TheiaSfM
     REF d15154a6c30ea48e7d135be126e2936802e476ad
-    SHA512 e3cb29b1806b6d2ed161c28432ad8788f756e03db55f883bfa2c4b389b506aa46909f0de57460e93e38926d8103382c54f51685bb9035688e4c7378f913c2de0
+    SHA512 aaf6e9737d04499f0ffd453952380f2e1aa3aab2a75487d6806bfab60aa972719d7349730eab3d1b37088e99cf6c9076ae1cdea276f48532698226c69ac48977
     HEAD_REF master
 )
 
@@ -20,6 +24,7 @@ vcpkg_apply_patches(
         ${CMAKE_CURRENT_LIST_DIR}/fix-vlfeat-static.patch
         ${CMAKE_CURRENT_LIST_DIR}/fix-glog-error.patch
         ${CMAKE_CURRENT_LIST_DIR}/fix-find-suitesparse.patch
+        ${CMAKE_CURRENT_LIST_DIR}/fix-oiio.patch
 )
 
 vcpkg_configure_cmake(
