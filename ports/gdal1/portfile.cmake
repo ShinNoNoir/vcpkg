@@ -30,8 +30,8 @@ endforeach()
 find_program(NMAKE nmake REQUIRED)
 
 file(TO_NATIVE_PATH "${CURRENT_PACKAGES_DIR}" NATIVE_PACKAGES_DIR)
-file(TO_NATIVE_PATH "${CURRENT_PACKAGES_DIR}/share/gdal" NATIVE_DATA_DIR)
-file(TO_NATIVE_PATH "${CURRENT_PACKAGES_DIR}/share/gdal/html" NATIVE_HTML_DIR)
+file(TO_NATIVE_PATH "${CURRENT_PACKAGES_DIR}/share/gdal1" NATIVE_DATA_DIR)
+file(TO_NATIVE_PATH "${CURRENT_PACKAGES_DIR}/share/gdal1/html" NATIVE_HTML_DIR)
 
 # Setup proj4 libraries + include path
 file(TO_NATIVE_PATH "${CURRENT_INSTALLED_DIR}/include" PROJ_INCLUDE_DIR)
@@ -191,7 +191,7 @@ vcpkg_execute_required_process(
 message(STATUS "Building ${TARGET_TRIPLET}-dbg done")
 
 message(STATUS "Packaging ${TARGET_TRIPLET}")
-file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/share/gdal/html)
+file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/share/gdal1/html)
 
 vcpkg_execute_required_process(
   COMMAND ${NMAKE} -f makefile.vc
@@ -221,6 +221,6 @@ endif()
 vcpkg_copy_pdbs()
 
 # Handle copyright
-file(RENAME ${CURRENT_PACKAGES_DIR}/share/gdal/LICENSE.txt ${CURRENT_PACKAGES_DIR}/share/gdal/copyright)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/gdal1/LICENSE.txt ${CURRENT_PACKAGES_DIR}/share/gdal1/copyright)
 
 message(STATUS "Packaging ${TARGET_TRIPLET} done")
