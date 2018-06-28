@@ -1,4 +1,8 @@
 Source: gdal1
 Version: 1.11.3-5
 Description: The Geographic Data Abstraction Library for reading and writing geospatial raster and vector data.
-Build-Depends: proj, libpng, geos, sqlite3, curl, expat, libpq, libmysql, openjpeg, libwebp, libxml2, liblzma
+Build-Depends: proj, libpng, geos, sqlite3, curl, expat, libpq, openjpeg, libwebp, libxml2, liblzma
+
+Feature: mysql
+Description: MySQL support for GDAL 1.x
+Build-Depends: libmysql
