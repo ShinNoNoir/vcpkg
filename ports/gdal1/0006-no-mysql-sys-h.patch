@@ -1,0 +1,25 @@
+From 3e5ad6cf57f1ec369c5a438a29e9c28eebc65b68 Mon Sep 17 00:00:00 2001
+From: Raynor Vliegendhart <ShinNoNoir@gmail.com>
+Date: Thu, 28 Jun 2018 13:29:45 +0200
+Subject: [PATCH] Remove my_sys.h include
+
+---
+ ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp b/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp
+index 4dcfbb8..ac2539b 100644
+--- a/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp
++++ b/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp
+@@ -32,7 +32,7 @@
+ 
+ #include <string>
+ #include "ogr_mysql.h"
+-#include <my_sys.h>
++/* #include <my_sys.h> */ /* Mysql 8+ no longer ships with my_sys.h */
+ 
+ #include "cpl_conv.h"
+ #include "cpl_string.h"
+-- 
+2.8.2.windows.1
+

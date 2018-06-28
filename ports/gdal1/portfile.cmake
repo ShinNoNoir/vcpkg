@@ -24,6 +24,9 @@ foreach(BUILD_TYPE debug release)
         ${CMAKE_CURRENT_LIST_DIR}/0002-Add-variable-CXX_CRT_FLAGS-to-allow-for-selection-of.patch
         ${CMAKE_CURRENT_LIST_DIR}/0003-Ensures-inclusion-of-PDB-in-release-dll-if-so-reques.patch
         ${CMAKE_CURRENT_LIST_DIR}/0004-Fix-openjpeg-include.patch
+        ${CMAKE_CURRENT_LIST_DIR}/0005-no-mysql-global-h.patch
+        ${CMAKE_CURRENT_LIST_DIR}/0006-no-mysql-sys-h.patch
+        ${CMAKE_CURRENT_LIST_DIR}/no-my-bool.patch
     )
 endforeach()
 

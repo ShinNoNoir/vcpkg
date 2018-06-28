@@ -1,0 +1,25 @@
+From 4795eb44049249b48ae800516f0a004556d0df8e Mon Sep 17 00:00:00 2001
+From: Raynor Vliegendhart <ShinNoNoir@gmail.com>
+Date: Thu, 28 Jun 2018 14:01:29 +0200
+Subject: [PATCH] Replace my_bool with bool
+
+---
+ ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp b/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp
+index ac2539b..fb26105 100644
+--- a/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp
++++ b/ogr/ogrsf_frmts/mysql/ogrmysqldatasource.cpp
+@@ -226,7 +226,7 @@ int OGRMySQLDataSource::Open( const char * pszNewName, int bUpdate,
+         // Enable automatic reconnection
+         // Must be called after mysql_real_connect() on MySQL < 5.0.19
+         // and at any point on more recent versions.
+-        my_bool reconnect = 1;
++        bool reconnect = 1;
+         mysql_options(hConn, MYSQL_OPT_RECONNECT, &reconnect);
+     }
+     
+-- 
+2.8.2.windows.1
+

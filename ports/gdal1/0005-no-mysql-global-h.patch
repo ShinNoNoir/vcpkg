@@ -1,0 +1,25 @@
+From 7abaafd1c76d25ce3e72c04b2d4204d36fd9424f Mon Sep 17 00:00:00 2001
+From: Raynor Vliegendhart <ShinNoNoir@gmail.com>
+Date: Thu, 28 Jun 2018 12:04:18 +0200
+Subject: [PATCH] Remove my_global.h include
+
+---
+ ogr/ogrsf_frmts/mysql/ogr_mysql.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ogr/ogrsf_frmts/mysql/ogr_mysql.h b/ogr/ogrsf_frmts/mysql/ogr_mysql.h
+index a7ce7b7..6925112 100644
+--- a/ogr/ogrsf_frmts/mysql/ogr_mysql.h
++++ b/ogr/ogrsf_frmts/mysql/ogr_mysql.h
+@@ -32,7 +32,7 @@
+ #ifndef _OGR_MYSQL_H_INCLUDED
+ #define _OGR_MYSQL_H_INCLUDED
+ 
+-#include <my_global.h>
++/* #include <my_global.h> */ /* Mysql 8+ no longer ships with my_global.h */
+ #include <mysql.h>
+ 
+ /* my_global.h from mysql 5.1 declares the min and max macros. */
+-- 
+2.8.2.windows.1
+
