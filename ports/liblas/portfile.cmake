@@ -46,6 +46,16 @@ file(GLOB CMAKE_FILES "${CURRENT_PACKAGES_DIR}/cmake/*.cmake")
 file(INSTALL ${CMAKE_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/cmake ${CURRENT_PACKAGES_DIR}/debug/cmake)
 
+# Fix cmake relative path
+file(READ ${CURRENT_PACKAGES_DIR}/share/liblas/liblas-depends.cmake _contents)
+string(REPLACE
+    "get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)"
+    "get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)\nget_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)"
+    _contents
+    "${_contents}"
+)
+file(WRITE ${CURRENT_PACKAGES_DIR}/share/liblas/liblas-depends.cmake "${_contents}")
+
 # Move and cleanup doc files
 file(GLOB DOC_FILES "${CURRENT_PACKAGES_DIR}/doc/*")
 file(INSTALL ${DOC_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas/doc)
@@ -55,5 +65,5 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/doc ${CURRENT_PACKAGES_DIR}/debug/do
 file(INSTALL ${SOURCE_PATH}/LICENSE.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas RENAME copyright)
 
 
-# Post-build test for cmake libraries
-#vcpkg_test_cmake(PACKAGE_NAME liblas)
+# Post-build test for cmake libraries (note the capitalization of libLAS!)
+vcpkg_test_cmake(PACKAGE_NAME libLAS)
