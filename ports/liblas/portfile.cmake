@@ -39,6 +39,15 @@ file(REMOVE ${BINARY_TOOLS})
 file(GLOB BINARY_TOOLS "${CURRENT_PACKAGES_DIR}/debug/bin/*.exe")
 file(REMOVE ${BINARY_TOOLS})
 
+# Fix capitalization of cmake files: liblas -> libLAS
+foreach(BUILD_TYPE "/debug" "")
+    file(GLOB CMAKE_FILES "${CURRENT_PACKAGES_DIR}${BUILD_TYPE}/cmake/*.cmake")
+    foreach(CMAKE_FILE IN LISTS CMAKE_FILES)
+        string(REPLACE "liblas" "libLAS" CMAKE_FILE_PROPERLY_CASED "${CMAKE_FILE}")
+        file(RENAME ${CMAKE_FILE} ${CMAKE_FILE_PROPERLY_CASED})
+    endforeach()
+endforeach()
+
 # Install cmake files
 file(GLOB CMAKE_FILES "${CURRENT_PACKAGES_DIR}/debug/cmake/*.cmake")
 file(INSTALL ${CMAKE_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas)
@@ -47,14 +56,15 @@ file(INSTALL ${CMAKE_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/cmake ${CURRENT_PACKAGES_DIR}/debug/cmake)
 
 # Fix cmake relative path
-file(READ ${CURRENT_PACKAGES_DIR}/share/liblas/liblas-depends.cmake _contents)
+file(READ ${CURRENT_PACKAGES_DIR}/share/liblas/libLAS-depends.cmake _contents)
 string(REPLACE
     "get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)"
     "get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)\nget_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)"
     _contents
     "${_contents}"
 )
-file(WRITE ${CURRENT_PACKAGES_DIR}/share/liblas/liblas-depends.cmake "${_contents}")
+file(WRITE ${CURRENT_PACKAGES_DIR}/share/liblas/libLAS-depends.cmake "${_contents}")
+
 
 # Move and cleanup doc files
 file(RENAME ${CURRENT_PACKAGES_DIR}/doc ${CURRENT_PACKAGES_DIR}/share/liblas/doc)  
