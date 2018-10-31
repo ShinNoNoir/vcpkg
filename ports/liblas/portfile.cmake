@@ -33,7 +33,7 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 # Move executables
 file(GLOB BINARY_TOOLS "${CURRENT_PACKAGES_DIR}/bin/*.exe")
-file(INSTALL ${BINARY_TOOLS} DESTINATION ${CURRENT_PACKAGES_DIR}/tools/liblas)
+file(COPY ${BINARY_TOOLS} DESTINATION ${CURRENT_PACKAGES_DIR}/tools/liblas)
 vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/liblas)
 file(REMOVE ${BINARY_TOOLS})
 file(GLOB BINARY_TOOLS "${CURRENT_PACKAGES_DIR}/debug/bin/*.exe")
@@ -57,13 +57,11 @@ string(REPLACE
 file(WRITE ${CURRENT_PACKAGES_DIR}/share/liblas/liblas-depends.cmake "${_contents}")
 
 # Move and cleanup doc files
-file(GLOB DOC_FILES "${CURRENT_PACKAGES_DIR}/doc/*")
-file(INSTALL ${DOC_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas/doc)
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/doc ${CURRENT_PACKAGES_DIR}/debug/doc)
+file(RENAME ${CURRENT_PACKAGES_DIR}/doc ${CURRENT_PACKAGES_DIR}/share/liblas/doc)  
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/doc)  
 
 # Handle copyright
-file(INSTALL ${SOURCE_PATH}/LICENSE.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas RENAME copyright)
-
+configure_file(${SOURCE_PATH}/LICENSE.txt ${CURRENT_PACKAGES_DIR}/share/liblas/copyright COPYONLY) 
 
 # Post-build test for cmake libraries (note the capitalization of libLAS!)
 vcpkg_test_cmake(PACKAGE_NAME libLAS)
