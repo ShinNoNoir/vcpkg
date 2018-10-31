@@ -55,7 +55,7 @@ file(GLOB CMAKE_FILES "${CURRENT_PACKAGES_DIR}/cmake/*.cmake")
 file(INSTALL ${CMAKE_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblas)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/cmake ${CURRENT_PACKAGES_DIR}/debug/cmake)
 
-# Fix cmake relative path
+# Fix cmake relative path (_IMPORT_PREFIX)
 file(READ ${CURRENT_PACKAGES_DIR}/share/liblas/libLAS-depends.cmake _contents)
 string(REPLACE
     "get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)"
@@ -64,6 +64,16 @@ string(REPLACE
     "${_contents}"
 )
 file(WRITE ${CURRENT_PACKAGES_DIR}/share/liblas/libLAS-depends.cmake "${_contents}")
+
+# Fix cmake relative path (PROJECT_ROOT_DIR)
+file(READ ${CURRENT_PACKAGES_DIR}/share/liblas/libLAS-config.cmake _contents)
+string(REPLACE
+    "get_filename_component (PROJECT_ROOT_DIR \"\${_DIR}/..\" ABSOLUTE)"
+    "get_filename_component (PROJECT_ROOT_DIR \"\${_DIR}/../..\" ABSOLUTE)"
+    _contents
+    "${_contents}"
+)
+file(WRITE ${CURRENT_PACKAGES_DIR}/share/liblas/libLAS-config.cmake "${_contents}")
 
 
 # Move and cleanup doc files
