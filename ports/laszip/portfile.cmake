@@ -26,3 +26,7 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 # Remove laszip_api3 dll since it doesn't export functions properly during build.
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/bin/laszip_api3.dll)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin/laszip_api3.dll)
+
+# Include .hpp
+file(GLOB HPP_FILES ${SOURCE_PATH}/src/*.hpp)
+file(INSTALL ${HPP_FILES} DESTINATION ${CURRENT_PACKAGES_DIR}/include/laszip)
