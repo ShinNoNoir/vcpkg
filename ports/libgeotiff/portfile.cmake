@@ -15,6 +15,7 @@ vcpkg_extract_source_archive_ex(
     PATCHES
         cmakelists.patch
         geotiff-config.patch
+        proj6-api-change.patch
 )
 
 # Delete FindPROJ4.cmake
