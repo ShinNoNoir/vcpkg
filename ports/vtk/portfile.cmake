@@ -20,6 +20,15 @@ set(VTK_WITH_ALL_MODULES                 OFF) # IMPORTANT: if ON make sure `qt5`
                                               #            `libmysql` and `atlmfc` are  listed as dependency in the CONTROL file
 
 # =============================================================================
+# Download PROJ4 6.x patch for now until a new stable version is released
+# (see: https://gitlab.kitware.com/vtk/vtk/issues/17554)
+vcpkg_download_distfile(PROJ_PATCH_FILE
+    URLS https://gitlab.kitware.com/vtk/vtk/uploads/a6aaf8d86b64c36c5705658b341e7cf8/0001-Make-code-calling-proj4-compatible-with-proj4-5.0-an.patch
+    FILENAME vtk-0001-Make-code-calling-proj4-compatible-with-proj4-5.0-an.patch
+    SHA512 611d1289fc02f8da40f49ff6520d4e2478756ac2597a628d334e91ad9abcba4f65f8b68a84782f2e20f036c21310132bbe7095c7aa0db40a31797f024425e63d
+)
+
+# =============================================================================
 # Clone & patch
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
@@ -33,6 +42,7 @@ vcpkg_from_github(
         fix-pugixml-link.patch
         hdf5_static.patch
         fix-find-lzma.patch
+        ${PROJ_PATCH_FILE}
 )
 
 # Remove the FindGLEW.cmake and FindPythonLibs.cmake that are distributed with VTK,
