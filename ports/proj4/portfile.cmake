@@ -48,6 +48,17 @@ file(INSTALL ${PROJ_TOOLS_DLL} DESTINATION ${CURRENT_PACKAGES_DIR}/tools/${PORT}
 file(REMOVE ${PROJ_TOOLS})
 file(REMOVE ${DBG_PROJ_TOOLS})
 
+# Rename output files
+if(NOT VCPKG_CMAKE_SYSTEM_NAME OR VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
+        file(RENAME ${CURRENT_PACKAGES_DIR}/lib/proj_6_2.lib  ${CURRENT_PACKAGES_DIR}/lib/proj.lib)
+    endif()
+    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
+        file(RENAME ${CURRENT_PACKAGES_DIR}/debug/lib/proj_6_2_d.lib  ${CURRENT_PACKAGES_DIR}/debug/lib/projd.lib)
+    endif()
+endif()
+
+
 # Can't get CMAKECONFIGDIR to actually output .cmake files in the desired location,
 # so let's do this manually.
 # First merge the two lib/cmake dirs:
@@ -70,10 +81,17 @@ foreach(CMAKE_TARGET_FILE "proj4-targets" "proj4-namespace-targets")
     )
     file(WRITE ${CURRENT_PACKAGES_DIR}/share/proj4/${CMAKE_TARGET_FILE}.cmake "${_contents}")
 endforeach()
-# 2. Fix location of debug lib/bin:
+# 2. Fix location of debug lib/bin and rename lib file:
 foreach(CMAKE_TARGET_FILE "proj4-targets-debug" "proj4-namespace-targets-debug")
     file(READ ${CURRENT_PACKAGES_DIR}/share/proj4/${CMAKE_TARGET_FILE}.cmake _contents)
     string(REPLACE "\${_IMPORT_PREFIX}/" "\${_IMPORT_PREFIX}/debug/" _contents "${_contents}")
+    string(REPLACE "proj_6_2_d.lib" "projd.lib" _contents "${_contents}")
+    file(WRITE ${CURRENT_PACKAGES_DIR}/share/proj4/${CMAKE_TARGET_FILE}.cmake "${_contents}")
+endforeach()
+# 3. Also rename lib file for release mode:
+foreach(CMAKE_TARGET_FILE "proj4-targets-release" "proj4-namespace-targets-release")
+    file(READ ${CURRENT_PACKAGES_DIR}/share/proj4/${CMAKE_TARGET_FILE}.cmake _contents)
+    string(REPLACE "proj_6_2.lib" "proj.lib" _contents "${_contents}")
     file(WRITE ${CURRENT_PACKAGES_DIR}/share/proj4/${CMAKE_TARGET_FILE}.cmake "${_contents}")
 endforeach()
 
